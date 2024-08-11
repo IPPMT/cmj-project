@@ -3,7 +3,7 @@ import GridPattern from "@/components/magicui/grid-pattern";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 
-export default function Page() {
+export default async function Page() {
   return (
     <main className="flex w-full min-h-screen items-center justify-center">
       <Toaster closeButton richColors position="top-center" />

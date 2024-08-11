@@ -23,6 +23,7 @@ export default function SignInForm() {
         });
 
         if (res.ok) {
+          toast.success("Sign in successful");
           router.push("/");
         } else {
           toast.error("Invalid email or password");

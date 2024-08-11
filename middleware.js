@@ -1,4 +1,3 @@
-import { createDropdownMenuScope } from "@radix-ui/react-dropdown-menu";
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
@@ -30,19 +29,20 @@ export default async function middleware(req) {
     searchParams.length > 0 ? `?${searchParams}` : ""
   }`;
 
-  // rewrites for app pages
-  if (hostname == `console.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) {
+  if (hostname === `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) {
     const session = await getToken({ req });
-    if (!session && path !== "/sign-in") {
-      return NextResponse.redirect(new URL("/sign-in", req.url));
-    } else if (session && path == "/sign-in") {
+    console.log(path);
+    if (session && path == "/sign-in") {
       return NextResponse.redirect(new URL("/", req.url));
+    } else if (session && path === "/register") {
+      return NextResponse.redirect(new URL("/", req.url));
+    } else if (!session && path === "/") {
+      return NextResponse.redirect(new URL("/sign-in", req.url));
     }
     return NextResponse.rewrite(
       new URL(`/app${path === "/" ? "" : path}`, req.url)
     );
   }
-
   // special case for `vercel.pub` domain
   if (hostname === "vercel.pub") {
     return NextResponse.redirect(
@@ -50,16 +50,10 @@ export default async function middleware(req) {
     );
   }
 
-  // rewrite root application to `/home` folder
   if (
     hostname === "localhost:3000" ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
-    return NextResponse.rewrite(
-      new URL(`/home${path === "/" ? "" : path}`, req.url)
-    );
+    return NextResponse.next();
   }
-
-  // rewrite everything else to `/[domain]/[slug] dynamic route
-  return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }

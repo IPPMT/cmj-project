@@ -1,8 +1,13 @@
 import GridPattern from "@/components/magicui/grid-pattern";
 import { cn } from "@/lib/utils";
 import TypingAnimation from "@/components/magicui/typing-animation";
+import { SignOut } from "@/components/sign-out";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export default async function Home() {
+export default async function Page() {
+  const session = await getServerSession(authOptions);
+  console.log(session);
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black overflow-hidden relative">
       <div className="absolute top-0 left-0 w-80 h-80 rotate-45 bg-gradient-to-br from-blue-500 to-indigo-800 blur-2xl rounded-full opacity-50"></div>
@@ -21,6 +26,7 @@ export default async function Home() {
           "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)] "
         )}
       />
+      {session && <SignOut />}
     </main>
   );
 }
