@@ -80,7 +80,7 @@ export default function SignUpForm() {
       />
 
       {check && (
-        <p className="text-xs mt-3 text-red-500">Password didn't match</p>
+        <p className="text-xs mt-3 text-red-500">Password didn&apos;t match</p>
       )}
 
       <SubmitButton className={"mt-10"}>Sign Up</SubmitButton>

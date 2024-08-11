@@ -4,16 +4,29 @@ import SubmitButton from "../submit-button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { SignIn } from "@/lib/auth/auth-actions";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   return (
     <form
       action={async (formData) => {
-        await SignIn(formData);
+        const res = await signIn("credentials", {
+          email: formData.get("email"),
+          password: formData.get("password"),
+          redirect: false,
+        });
+
+        if (res.ok) {
+          router.push("/");
+        } else {
+          toast.error("Invalid email or password");
+        }
       }}
       className="flex flex-col mt-5"
     >
