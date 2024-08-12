@@ -43,6 +43,19 @@ export default async function middleware(req) {
       new URL(`/app${path === "/" ? "" : path}`, req.url)
     );
   }
+
+  if (hostname === `drive.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) {
+    const session = await getToken({ req });
+
+    if (!session && path !== "/sign-in") {
+      return NextResponse.redirect(new URL("/sign-in", req.url));
+    }
+
+    return NextResponse.rewrite(
+      new URL(`/drive${path === "/" ? "" : path}`, req.url)
+    );
+  }
+
   // special case for `vercel.pub` domain
   if (hostname === "vercel.pub") {
     return NextResponse.redirect(
